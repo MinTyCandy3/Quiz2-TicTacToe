@@ -16,8 +16,6 @@ void initializeBoard(struct Board board, int choice);
 
 void printStatus(struct Board board);
 
-bool placeOnBoard(struct Board board, int row, int col, char playerSymbol);
-
 bool checkTile(char tile);
 
 int main(){
@@ -94,7 +92,6 @@ int main(){
     * keep alternating between player 1 or 2 while
     * checking if there 3 X / O in a row / col / diagonal (should be in a function)
     */
-
     while (!winningPlayer)
     {
         int row;
@@ -112,16 +109,68 @@ int main(){
 
         // Display board and prompt
         printStatus(tictactoe);
+        printf("Player%d: make your move\n", tictactoe.turn);
         scanf("%d %d", &row, &col);
 
+        if(row == 1 && col == 1)
+        {
+            checkTile(tictactoe.topLeft);
+            tictactoe.topLeft = playerSymbol;
+        }
+        else if(row == 1 && col == 2)
+        {
+            checkTile(tictactoe.topMiddle);
+            tictactoe.topMiddle = playerSymbol;
+        }
+        else if(row == 1 && col == 3)
+        {
+            checkTile(tictactoe.topRight);
+            tictactoe.topRight = playerSymbol;
+        }
+        else if(row == 2 && col == 1)
+        {
+            checkTile(tictactoe.left);
+            tictactoe.left = playerSymbol;
+        }
+        else if(row == 2 && col == 2)
+        {
+            checkTile(tictactoe.middle);
+            tictactoe.middle = playerSymbol;
+        }
+        else if(row == 2 && col == 3)
+        {
+            checkTile(tictactoe.right);
+            tictactoe.right = playerSymbol;
+        }
+        else if(row == 3 && col == 1)
+        {
+            checkTile(tictactoe.bottomLeft);
+            tictactoe.bottomLeft = playerSymbol;
+        }
+        else if(row == 3 && col == 2)
+        {
+            checkTile(tictactoe.bottomMiddle);
+            tictactoe.bottomMiddle = playerSymbol;
+        }
+        else if(row == 3 && col == 3)
+        {
+            checkTile(tictactoe.bottomRight);
+            tictactoe.bottomRight = playerSymbol;
+        }
+
         printf("%c", tictactoe.topLeft);
+
+        if(tictactoe.turn == 1)
+        {
+            tictactoe.turn = 2;
+        }
+        else
+        {
+            tictactoe.turn = 1;
+        }
+
         
 
-        placeOnBoard(tictactoe, row, col, playerSymbol);
-
-        printStatus(tictactoe);
-
-        winningPlayer = true;   
     }
 
     // Read
@@ -159,56 +208,6 @@ void printStatus(struct Board board)
     printf("+-----------+ \n| %c | %c | %c | \n", board.left, board.middle, board.right);
     printf("+-----------+ \n| %c | %c | %c | \n", board.bottomLeft, board.bottomMiddle, board.bottomRight);
     printf("+-----------+ \n");
-}
-
-// puts the following X or O on the chosen tile / returns false 
-bool placeOnBoard(struct Board board, int row, int col, char playerSymbol)
-{
-    if(row == 1 && col == 1)
-    {
-        checkTile(board.topLeft);
-        board.topLeft = playerSymbol;
-        // printf("%c", board.topLeft);
-    }
-    else if(row == 1 && col == 2)
-    {
-        checkTile(board.topMiddle);
-    }
-    else if(row == 1 && col == 3)
-    {
-        checkTile(board.topRight);
-    }
-    else if(row == 2 && col == 1)
-    {
-        checkTile(board.left);
-    }
-    else if(row == 2 && col == 2)
-    {
-        checkTile(board.middle);
-    }
-    else if(row == 2 && col == 3)
-    {
-        checkTile(board.right);
-    }
-    else if(row == 3 && col == 1)
-    {
-        checkTile(board.bottomLeft);
-    }
-    else if(row == 3 && col == 2)
-    {
-        checkTile(board.bottomMiddle);
-    }
-    else if(row == 3 && col == 3)
-    {
-        checkTile(board.bottomRight);
-    }
-    else
-    {
-        // Not a real placement
-        return false;
-    }
-
-    return true;
 }
 
 // checks if tile is occupied or not, returns true or false depending if the tile is occupied
