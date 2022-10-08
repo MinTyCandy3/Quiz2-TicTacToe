@@ -1,5 +1,7 @@
 // TIC TAC TOE game between 2 players or player vs computer
 #include <stdio.h>
+#include <stdlib.h> 
+#include <time.h> 
 
 typedef enum { false, true } bool;
 
@@ -21,14 +23,20 @@ bool checkTile(char tile);
 
 bool checkIfWinner(struct Board board, char currentSymbol);
 
+int choice;
+struct Board tictactoe;
+
 int main(){
 
     // prompt user for game they wish to play   
 
-    int choice;
     bool typeChoice = false;
     bool winningPlayer = false;
-    struct Board tictactoe;
+
+    // inits random num generator
+
+    time_t t; 
+    srand((unsigned)time(&t)); 
 
     printf( "===========================\n");
     printf( "WELCOME TO TIC TAC TOE!\n");
@@ -36,7 +44,7 @@ int main(){
     printf( "2 --- person vs. random computer\n");
     printf( "Enter your choice (1 or 2): ");    
 
-    scanf("%d", &choice);     
+    scanf("%i", &choice);     
 
     // read information from console (only 1 or 2)
     while(!typeChoice)
@@ -82,10 +90,6 @@ int main(){
 
     winningPlayer = false;
 
-    
-
-    
-
     /*
     * Option 1: player v player
     * Display board, prompt player 1 (X)
@@ -95,12 +99,22 @@ int main(){
     * keep alternating between player 1 or 2 while
     * checking if there 3 X / O in a row / col / diagonal (should be in a function)
     */
+
+    /* 
+    * Option 2: plaver v computer
+    * Display board, prompt player (X)
+    * read info (Format: # #; (1-3), (1-3))
+    * Display board with new X, move to computer
+    * Randomly place O 
+    * keep alternating between player 1 or computer while
+    * checking if there's a winner
+    */
+    bool invalidInput = false;
     while (!winningPlayer)
     {
         int row;
         int col;
         char playerSymbol;
-        bool invalidInput = false;
 
         if(tictactoe.turn == 1)
         {
@@ -112,9 +126,27 @@ int main(){
         }
 
         // Display board and prompt
-        printStatus(tictactoe);
-        printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
-        scanf("%d %d\n", &row, &col);
+        if(!(invalidInput && choice == 2 && tictactoe.turn == 2))
+        {
+            printStatus(tictactoe);
+        }
+
+        if(tictactoe.turn == 2 && choice == 2 && !winningPlayer && !(tictactoe.attempts >= 9))
+        {
+            row = rand() % 4;
+            col = rand() % 4;
+            if(!invalidInput)
+            {
+                printf("Player %d is making a move... and they've chosen %d %d!\n", tictactoe.turn, row, col);
+            }
+        }
+        else
+        {
+            printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
+            scanf("%d %d", &row, &col);
+        }
+
+        invalidInput = false;
 
         if(row == 1 && col == 1)
         {
@@ -217,21 +249,14 @@ int main(){
         }
         else
         {
-            printf("INVALID INPUT: That spot doesn't exist! Choose again ([#1-3] [#1-3])\n");
+            if(!(choice == 2 && tictactoe.turn == 2))
+            {
+                printf("INVALID INPUT: That spot doesn't exist! Choose again ([#1-3] [#1-3])\n");
+            }
             invalidInput = true;
         }
 
         winningPlayer = checkIfWinner(tictactoe, playerSymbol);
-
-        if(winningPlayer)
-        {
-            printStatus(tictactoe);
-            printf("Congratulations Player %d! You win!", tictactoe.turn);
-        }
-        else if(tictactoe.attempts >= 9)
-        {
-            printf("It's a tie!");
-        }
 
         if(!invalidInput && !winningPlayer)
         {
@@ -246,26 +271,20 @@ int main(){
             }
         }
 
+        if(winningPlayer)
+        {
+            printStatus(tictactoe);
+            printf("Congratulations Player %d! You win!", tictactoe.turn);
+        }
+        else if(tictactoe.attempts >= 9)
+        {
+            printf("It's a tie!");
+            winningPlayer = true;
+        }
+
+
 
     }
-
-    /* 
-    * Option 2: plaver v computer
-    * Display board, prompt player (X)
-    * read info (Format: # #; (1-3), (1-3))
-    * Display board with new X, move to computer
-    * Randomly place O (should be in a function)
-    * keep alternating between player 1 or computer while
-    * checking if there's a winner
-    */
-
-    // Display board and prompt
-
-    // Read
-
-    // Repeat . . .
-
-    // Check if there's a winner
 
     return 0;
 }
@@ -285,7 +304,10 @@ bool checkTile(char tile){
 
     if(tile == 'O' || tile == 'X')
     {
-        printf ("INVALID INPUT: That spot is already chosen! Choose again ([#1-3] [#1-3])\n");
+        if(!(choice == 2 && tictactoe.turn == 2))
+        {
+           printf ("INVALID INPUT: That spot is already chosen! Choose again ([#1-3] [#1-3])\n");
+        }
         return false;
     }
 
