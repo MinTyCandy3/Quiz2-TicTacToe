@@ -19,273 +19,308 @@ void initializeBoard(struct Board board, int choice);
 
 void printStatus(struct Board board);
 
-bool checkTile(char tile);
+bool checkTile(char tile, char choice);
 
 bool checkIfWinner(struct Board board, char currentSymbol);
 
-int choice;
 struct Board tictactoe;
 
 int main(){
 
     // prompt user for game they wish to play   
-
+    int choice;
     bool typeChoice = false;
     bool winningPlayer = false;
+    bool playAgain = true;
+    bool invalidInput = false;
 
     // inits random num generator
 
     time_t t; 
     srand((unsigned)time(&t)); 
 
-    printf( "===========================\n");
-    printf( "WELCOME TO TIC TAC TOE!\n");
-    printf( "1 --- person vs. person\n");
-    printf( "2 --- person vs. random computer\n");
-    printf( "Enter your choice (1 or 2): ");    
-
-    scanf("%i", &choice);     
-
-    // read information from console (only 1 or 2)
-    while(!typeChoice)
+    while(playAgain)
     {
-            typeChoice = true;
-            switch (choice)
-            {
-            case 1:
-                /* code */
-                printf( "===========================\n");
-                printf("You have entered choice 1\n");
-                break;
-            case 2:
-                printf( "===========================\n");
-                printf("You have entered choice 2\n");
-                break;
-            default:
-                typeChoice = false;
-                printf("===========================\n");
-                printf("Please enter the correct choice (1 or 2): ");
-                scanf("%d", &choice);
-                break;
-            }
 
-    }
+        playAgain = false;
 
-    // initializing board
-    tictactoe.turn = 1;
-    tictactoe.player1Symbol = 'X';
-    tictactoe.player2Symbol = 'O';
+        printf( "===========================\n");
+        printf( "WELCOME TO TIC TAC TOE!\n");
+        printf( "1 --- person vs. person\n");
+        printf( "2 --- person vs. random computer\n");
+        printf( "Enter your choice (1 or 2): ");    
 
-    tictactoe.attempts = 0;
+        scanf("%i", &choice);     
 
-    tictactoe.topLeft = ' ';
-    tictactoe.topMiddle = ' ';
-    tictactoe.topRight = ' ';
-    tictactoe.left = ' ';
-    tictactoe.middle = ' ';
-    tictactoe.right = ' ';
-    tictactoe.bottomLeft = ' ';
-    tictactoe.bottomMiddle = ' ';
-    tictactoe.bottomRight = ' ';
-
-    winningPlayer = false;
-
-    /*
-    * Option 1: player v player
-    * Display board, prompt player 1 (X)
-    * read info (Format: # #; (1-3), (1-3))
-    * Display board with new X, prompt player 2 (O)
-    * read info 
-    * keep alternating between player 1 or 2 while
-    * checking if there 3 X / O in a row / col / diagonal (should be in a function)
-    */
-
-    /* 
-    * Option 2: plaver v computer
-    * Display board, prompt player (X)
-    * read info (Format: # #; (1-3), (1-3))
-    * Display board with new X, move to computer
-    * Randomly place O 
-    * keep alternating between player 1 or computer while
-    * checking if there's a winner
-    */
-    bool invalidInput = false;
-    while (!winningPlayer)
-    {
-        int row;
-        int col;
-        char playerSymbol;
-
-        if(tictactoe.turn == 1)
+        // read information from console (only 1 or 2)
+        while(!typeChoice)
         {
-            playerSymbol = tictactoe.player1Symbol;
-        }
-        else
-        {
-            playerSymbol = tictactoe.player2Symbol;
+                typeChoice = true;
+                switch (choice)
+                {
+                case 1:
+                    /* code */
+                    printf( "===========================\n");
+                    printf("You have entered choice 1\n");
+                    fflush(stdin);
+                    break;
+                case 2:
+                    printf( "===========================\n");
+                    printf("You have entered choice 2\n");
+                    fflush(stdin);
+                    break;
+                default:
+                    typeChoice = false;
+                    printf("===========================\n");
+                    printf("Please enter the correct choice (1 or 2): ");
+                    fflush(stdin);
+                    scanf("%d", &choice);
+                    break;
+                }
+
         }
 
-        // Display board and prompt
-        if(!(invalidInput && choice == 2 && tictactoe.turn == 2))
-        {
-            printStatus(tictactoe);
-        }
+        // initializing board
+        tictactoe.turn = 1;
+        tictactoe.player1Symbol = 'X';
+        tictactoe.player2Symbol = 'O';
 
-        if(tictactoe.turn == 2 && choice == 2 && !winningPlayer && !(tictactoe.attempts >= 9))
-        {
-            row = rand() % 4;
-            col = rand() % 4;
-            if(!invalidInput)
-            {
-                printf("Player %d is making a move... and they've chosen %d %d!\n", tictactoe.turn, row, col);
-            }
-        }
-        else
-        {
-            printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
-            scanf("%d %d", &row, &col);
-        }
+        tictactoe.attempts = 0;
 
-        invalidInput = false;
+        tictactoe.topLeft = ' ';
+        tictactoe.topMiddle = ' ';
+        tictactoe.topRight = ' ';
+        tictactoe.left = ' ';
+        tictactoe.middle = ' ';
+        tictactoe.right = ' ';
+        tictactoe.bottomLeft = ' ';
+        tictactoe.bottomMiddle = ' ';
+        tictactoe.bottomRight = ' ';
 
-        if(row == 1 && col == 1)
-        {
-            if(checkTile(tictactoe.topLeft))
-            {
-                tictactoe.topLeft = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 1 && col == 2)
-        {
-            if(checkTile(tictactoe.topMiddle))
-            {
-                tictactoe.topMiddle = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 1 && col == 3)
-        {
-            if(checkTile(tictactoe.topRight))
-            {
-                tictactoe.topRight = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 2 && col == 1)
-        {
-            if(checkTile(tictactoe.left))
-            {
-                tictactoe.left = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 2 && col == 2)
-        {
-            if(checkTile(tictactoe.middle))
-            {
-                tictactoe.middle = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 2 && col == 3)
-        {
-            if(checkTile(tictactoe.right))
-            {
-                tictactoe.right = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 3 && col == 1)
-        {
-            if(checkTile(tictactoe.bottomLeft))
-            {
-                tictactoe.bottomLeft = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 3 && col == 2)
-        {
-            if(checkTile(tictactoe.bottomMiddle))
-            {
-                tictactoe.bottomMiddle = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else if(row == 3 && col == 3)
-        {
-            if(checkTile(tictactoe.bottomRight))
-            {
-                tictactoe.bottomRight = playerSymbol;
-            }
-            else
-            {
-                invalidInput = true;
-            }
-        }
-        else
-        {
-            if(!(choice == 2 && tictactoe.turn == 2))
-            {
-                printf("INVALID INPUT: That spot doesn't exist! Choose again ([#1-3] [#1-3])\n");
-            }
-            invalidInput = true;
-        }
+        winningPlayer = false;
 
-        winningPlayer = checkIfWinner(tictactoe, playerSymbol);
+        /*
+        * Option 1: player v player
+        * Display board, prompt player 1 (X)
+        * read info (Format: # #; (1-3), (1-3))
+        * Display board with new X, prompt player 2 (O)
+        * read info 
+        * keep alternating between player 1 or 2 while
+        * checking if there 3 X / O in a row / col / diagonal (should be in a function)
+        */
 
-        if(!invalidInput && !winningPlayer)
+        /* 
+        * Option 2: plaver v computer
+        * Display board, prompt player (X)
+        * read info (Format: # #; (1-3), (1-3))
+        * Display board with new X, move to computer
+        * Randomly place O 
+        * keep alternating between player 1 or computer while
+        * checking if there's a winner
+        */
+        while (!winningPlayer)
         {
-            tictactoe.attempts++;
+            int row;
+            int col;
+            char playerSymbol;
+
             if(tictactoe.turn == 1)
             {
-                tictactoe.turn = 2;
+                playerSymbol = tictactoe.player1Symbol;
             }
             else
             {
-                tictactoe.turn = 1;
+                playerSymbol = tictactoe.player2Symbol;
+            }
+
+            // Display board and prompt
+            if(!(invalidInput && choice == 2 && tictactoe.turn == 2))
+            {
+                printStatus(tictactoe);
+            }
+
+            if(tictactoe.turn == 2 && choice == 2 && !winningPlayer && !(tictactoe.attempts >= 9))
+            {
+                row = rand() % 4;
+                col = rand() % 4;
+                if(!invalidInput)
+                {
+                    printf("Player %d is making a move... and they've chosen %d %d!\n", tictactoe.turn, row, col);
+                }
+            }
+            else
+            {
+                printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
+                scanf("%d %d", &row, &col);
+            }
+
+            invalidInput = false;
+
+            if(row == 1 && col == 1)
+            {
+                if(checkTile(tictactoe.topLeft, choice))
+                {
+                    tictactoe.topLeft = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 1 && col == 2)
+            {
+                if(checkTile(tictactoe.topMiddle, choice))
+                {
+                    tictactoe.topMiddle = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 1 && col == 3)
+            {
+                if(checkTile(tictactoe.topRight, choice))
+                {
+                    tictactoe.topRight = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 2 && col == 1)
+            {
+                if(checkTile(tictactoe.left, choice))
+                {
+                    tictactoe.left = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 2 && col == 2)
+            {
+                if(checkTile(tictactoe.middle, choice))
+                {
+                    tictactoe.middle = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 2 && col == 3)
+            {
+                if(checkTile(tictactoe.right, choice))
+                {
+                    tictactoe.right = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 3 && col == 1)
+            {
+                if(checkTile(tictactoe.bottomLeft, choice))
+                {
+                    tictactoe.bottomLeft = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 3 && col == 2)
+            {
+                if(checkTile(tictactoe.bottomMiddle, choice))
+                {
+                    tictactoe.bottomMiddle = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else if(row == 3 && col == 3)
+            {
+                if(checkTile(tictactoe.bottomRight, choice))
+                {
+                    tictactoe.bottomRight = playerSymbol;
+                }
+                else
+                {
+                    invalidInput = true;
+                }
+            }
+            else
+            {
+                if(!(choice == 2 && tictactoe.turn == 2))
+                {
+                    printf("INVALID INPUT: That spot doesn't exist! Choose again ([#1-3] [#1-3])\n");
+                }
+                invalidInput = true;
+            }
+
+            winningPlayer = checkIfWinner(tictactoe, playerSymbol);
+
+            if(!invalidInput && !winningPlayer)
+            {
+                tictactoe.attempts++;
+                if(tictactoe.turn == 1)
+                {
+                    tictactoe.turn = 2;
+                }
+                else
+                {
+                    tictactoe.turn = 1;
+                }
+            }
+
+            if(winningPlayer)
+            {
+                printStatus(tictactoe);
+                printf("Congratulations Player %d! You win!]n", tictactoe.turn);
+            }
+            else if(tictactoe.attempts >= 9)
+            {
+                printStatus(tictactoe);
+                printf("It's a tie!\n");
+                winningPlayer = true;
+            }
+
+            fflush(stdin);
+            
+
+        }
+
+    // asks user if they want to play again
+    bool isYesOrNo = false;
+    char yesOrNo;
+    
+    while(!isYesOrNo)
+    {
+        fflush(stdin);
+        printf("Would you like to play again? (y/n)\n");
+        scanf("%c", &yesOrNo);
+
+        if(yesOrNo == 'y' || yesOrNo == 'n')
+        {
+            isYesOrNo = true;
+            if(yesOrNo == 'y')
+            {
+                playAgain = true;
             }
         }
-
-        if(winningPlayer)
+        else
         {
-            printStatus(tictactoe);
-            printf("Congratulations Player %d! You win!", tictactoe.turn);
+            printf("INVALID INPUT: Please answer in either yes or no (y/n)\n\n");
         }
-        else if(tictactoe.attempts >= 9)
-        {
-            printf("It's a tie!");
-            winningPlayer = true;
-        }
-
-
-
     }
 
+    }
     return 0;
 }
 
@@ -300,7 +335,7 @@ void printStatus(struct Board board)
 }
 
 // checks if tile is occupied or not, returns true or false depending if the tile is occupied
-bool checkTile(char tile){
+bool checkTile(char tile, char choice){
 
     if(tile == 'O' || tile == 'X')
     {
