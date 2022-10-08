@@ -282,7 +282,7 @@ int main(){
             if(winningPlayer)
             {
                 printStatus(tictactoe);
-                printf("Congratulations Player %d! You win!]n", tictactoe.turn);
+                printf("Congratulations Player %d! You win!\n", tictactoe.turn);
             }
             else if(tictactoe.attempts >= 9)
             {
