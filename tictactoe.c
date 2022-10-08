@@ -7,6 +7,7 @@ struct Board
 {
     /* data */
     int turn;
+    int attempts;
     char player1Symbol, player2Symbol;
 
     char topLeft, topMiddle, topRight, left, middle, right, bottomLeft, bottomMiddle, bottomRight;
@@ -17,6 +18,8 @@ void initializeBoard(struct Board board, int choice);
 void printStatus(struct Board board);
 
 bool checkTile(char tile);
+
+bool checkIfWinner(struct Board board, char currentSymbol);
 
 int main(){
 
@@ -65,6 +68,8 @@ int main(){
     tictactoe.player1Symbol = 'X';
     tictactoe.player2Symbol = 'O';
 
+    tictactoe.attempts = 0;
+
     tictactoe.topLeft = ' ';
     tictactoe.topMiddle = ' ';
     tictactoe.topRight = ' ';
@@ -74,8 +79,6 @@ int main(){
     tictactoe.bottomLeft = ' ';
     tictactoe.bottomMiddle = ' ';
     tictactoe.bottomRight = ' ';
-
-    tictactoe.middle = tictactoe.player1Symbol;
 
     winningPlayer = false;
 
@@ -111,7 +114,7 @@ int main(){
         // Display board and prompt
         printStatus(tictactoe);
         printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
-        scanf("%d %d", &row, &col);
+        scanf("%d %d\n", &row, &col);
 
         if(row == 1 && col == 1)
         {
@@ -218,8 +221,21 @@ int main(){
             invalidInput = true;
         }
 
-        if(!invalidInput)
+        winningPlayer = checkIfWinner(tictactoe, playerSymbol);
+
+        if(winningPlayer)
         {
+            printStatus(tictactoe);
+            printf("Congratulations Player %d! You win!", tictactoe.turn);
+        }
+        else if(tictactoe.attempts >= 9)
+        {
+            printf("It's a tie!");
+        }
+
+        if(!invalidInput && !winningPlayer)
+        {
+            tictactoe.attempts++;
             if(tictactoe.turn == 1)
             {
                 tictactoe.turn = 2;
@@ -230,13 +246,8 @@ int main(){
             }
         }
 
+
     }
-
-    // Read
-
-    // Repeat . . .
-
-    // Check if there's a winner
 
     /* 
     * Option 2: plaver v computer
@@ -282,5 +293,55 @@ bool checkTile(char tile){
 }
 
 // function that checks if there is 3 X's or O's in a row / col / diagonal 
+bool checkIfWinner(struct Board board, char currentSymbol){
+    //HORIZONTAL CHECKS
+    if(board.topLeft == currentSymbol && board.topMiddle == currentSymbol && board.topRight == currentSymbol)
+    {
+        //top row
+        return true;
+
+    }
+    else if(board.left == currentSymbol && board.middle == currentSymbol && board.right == currentSymbol)
+    {
+        //middle row
+        return true;
+    }
+    else if(board.bottomLeft == currentSymbol && board.bottomMiddle == currentSymbol && board.bottomRight == currentSymbol)
+    {
+        //bottom row
+        return true;
+    }
+    //VERTICAL CHECKS
+    else if(board.topLeft == currentSymbol && board.left == currentSymbol && board.bottomLeft == currentSymbol)
+    {
+        //left col
+        return true;
+    }
+    else if(board.topMiddle == currentSymbol && board.middle== currentSymbol && board.bottomMiddle == currentSymbol)
+    {
+        //middle col
+        return true;
+    }
+    else if(board.topRight == currentSymbol && board.right == currentSymbol && board.bottomRight == currentSymbol)
+    {
+        //right col
+        return true;
+    }
+    //DIAGONAL CHECKS
+    else if(board.topLeft == currentSymbol && board.middle == currentSymbol && board.bottomRight == currentSymbol)
+    {
+        //decreasing slope diagonal check
+        return true;
+    }
+    else if(board.bottomRight == currentSymbol && board.middle == currentSymbol && board.topRight == currentSymbol)
+    {
+        //inceasing slope diagonal check
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 // function for random placement of X or O
