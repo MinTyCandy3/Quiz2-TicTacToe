@@ -97,6 +97,7 @@ int main(){
         int row;
         int col;
         char playerSymbol;
+        bool invalidInput = false;
 
         if(tictactoe.turn == 1)
         {
@@ -109,67 +110,125 @@ int main(){
 
         // Display board and prompt
         printStatus(tictactoe);
-        printf("Player%d: make your move\n", tictactoe.turn);
+        printf("Player %d: make your move ([#1-3] [#1-3])\n", tictactoe.turn);
         scanf("%d %d", &row, &col);
 
         if(row == 1 && col == 1)
         {
-            checkTile(tictactoe.topLeft);
-            tictactoe.topLeft = playerSymbol;
+            if(checkTile(tictactoe.topLeft))
+            {
+                tictactoe.topLeft = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 1 && col == 2)
         {
-            checkTile(tictactoe.topMiddle);
-            tictactoe.topMiddle = playerSymbol;
+            if(checkTile(tictactoe.topMiddle))
+            {
+                tictactoe.topMiddle = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 1 && col == 3)
         {
-            checkTile(tictactoe.topRight);
-            tictactoe.topRight = playerSymbol;
+            if(checkTile(tictactoe.topRight))
+            {
+                tictactoe.topRight = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 2 && col == 1)
         {
-            checkTile(tictactoe.left);
-            tictactoe.left = playerSymbol;
+            if(checkTile(tictactoe.left))
+            {
+                tictactoe.left = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 2 && col == 2)
         {
-            checkTile(tictactoe.middle);
-            tictactoe.middle = playerSymbol;
+            if(checkTile(tictactoe.middle))
+            {
+                tictactoe.middle = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 2 && col == 3)
         {
-            checkTile(tictactoe.right);
-            tictactoe.right = playerSymbol;
+            if(checkTile(tictactoe.right))
+            {
+                tictactoe.right = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 3 && col == 1)
         {
-            checkTile(tictactoe.bottomLeft);
-            tictactoe.bottomLeft = playerSymbol;
+            if(checkTile(tictactoe.bottomLeft))
+            {
+                tictactoe.bottomLeft = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 3 && col == 2)
         {
-            checkTile(tictactoe.bottomMiddle);
-            tictactoe.bottomMiddle = playerSymbol;
+            if(checkTile(tictactoe.bottomMiddle))
+            {
+                tictactoe.bottomMiddle = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else if(row == 3 && col == 3)
         {
-            checkTile(tictactoe.bottomRight);
-            tictactoe.bottomRight = playerSymbol;
-        }
-
-        printf("%c", tictactoe.topLeft);
-
-        if(tictactoe.turn == 1)
-        {
-            tictactoe.turn = 2;
+            if(checkTile(tictactoe.bottomRight))
+            {
+                tictactoe.bottomRight = playerSymbol;
+            }
+            else
+            {
+                invalidInput = true;
+            }
         }
         else
         {
-            tictactoe.turn = 1;
+            printf("INVALID INPUT: That spot doesn't exist! Choose again ([#1-3] [#1-3])\n");
+            invalidInput = true;
         }
 
-        
+        if(!invalidInput)
+        {
+            if(tictactoe.turn == 1)
+            {
+                tictactoe.turn = 2;
+            }
+            else
+            {
+                tictactoe.turn = 1;
+            }
+        }
 
     }
 
@@ -207,7 +266,7 @@ void printStatus(struct Board board)
     printf("+-----------+ \n| %c | %c | %c | \n", board.topLeft, board.topMiddle, board.topRight);
     printf("+-----------+ \n| %c | %c | %c | \n", board.left, board.middle, board.right);
     printf("+-----------+ \n| %c | %c | %c | \n", board.bottomLeft, board.bottomMiddle, board.bottomRight);
-    printf("+-----------+ \n");
+    printf("+-----------+ \n\n");
 }
 
 // checks if tile is occupied or not, returns true or false depending if the tile is occupied
@@ -215,6 +274,7 @@ bool checkTile(char tile){
 
     if(tile == 'O' || tile == 'X')
     {
+        printf ("INVALID INPUT: That spot is already chosen! Choose again ([#1-3] [#1-3])\n");
         return false;
     }
 
